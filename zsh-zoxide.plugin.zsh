@@ -23,7 +23,7 @@ if (( ${ZI[SOURCED]} )) && [[ -d ${ZPFX} ]]; then
     command mkdir -p ${ZPFX}/share || \
     +zi-message "{error}Failed to create directory for database.{rst}"
   fi
-  typeset -g _ZO_DATA_DIR=${ZPFX}/share
+  _ZO_DATA_DIR=${ZPFX}/share
   if [[ -d ${ZI[MAN_DIR]} ]] && [[ -d ${Plugins[ZSH_ZOXIDE]}/man/man1 ]]; then
     cp ${Plugins[ZSH_ZOXIDE]}/man/man1/* ${ZI[MAN_DIR]}/man1/ || \
     +zi-message "{error}Failed to install manpages.{rst}"
@@ -32,10 +32,14 @@ fi
 
 # Set zoxide commands x, xi when using with Zi.
 if (( $ZI[SOURCED] )) && (( ${+functions[zi]} )); then
-: ${_ZO_CMD_PREFIX:=x}
+  _ZO_CMD_PREFIX=x
 fi
 
 # TODO: Env variables
+# If not set for Zi use default or user prefered.
+: ${_ZO_CMD_PREFIX:=$_ZO_CMD_PREFIX}
+# Directory in which the database is stored.
+: ${_ZO_DATA_DIR:=$_ZO_DATA_DIR}
 # When set to 1, x will print the matched directory before navigating to it.
 # _ZO_ECHO
 # Excludes the specified directories from the database.
