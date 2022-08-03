@@ -42,7 +42,7 @@ The plugin will call `zoxide init` with prefixed commands `x`, `xi`:
 
 - [x] Completions auto-loaded: [commands](https://wiki.zshell.dev/docs/guides/commands#completions-management), [ice-modifiers](https://wiki.zshell.dev/docs/guides/syntax/ice-modifiers#completions)
 - [x] Manpages auto installed: [\$ZI[MAN_DIR]](https://wiki.zshell.dev/docs/guides/customization#customizing-paths)
-- [x] [Database](https://github.com/ajeetdsouza/zoxide#environment-variables) directory set: [\$ZPFX/share](https://wiki.zshell.dev/community/zsh_plugin_standard#global-parameter-with-prefix)[customizing-paths](https://wiki.zshell.dev/docs/guides/customization#customizing-paths)
+- [x] [Database](https://github.com/ajeetdsouza/zoxide#environment-variables) directory set: [\$ZPFX/share](https://wiki.zshell.dev/community/zsh_plugin_standard#global-parameter-with-prefix), [customizing-paths](https://wiki.zshell.dev/docs/guides/customization#customizing-paths)
 
 ```sh
 x foo              # cd into highest ranked directory matching foo
