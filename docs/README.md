@@ -22,6 +22,8 @@ zi ice as'null' from"gh-r" sbin
 zi light ajeetdsouza/zoxide
 ```
 
+> Wiki: install [fzf](https://wiki.zshell.dev/ecosystem/packages/available-packages#the-fzf-command-line-fuzzy-finder) command-line fuzzy finder as Zi package.
+
 ### Install zsh-zoxide
 
 #### Standart syntax
