@@ -4,7 +4,8 @@
   </a>
 ❮ ZI ❯ Plugin - Zsh zoxide
 </p></h1>
-<h2 align="center"><p>zoxide is a smarter cd command, inspired by z and autojump.</p></h2>
+<h2 align="center"><p><code>zoxide</code> is a smarter <code>cd</code> command, inspired by <code>z</code> and <code>autojump</code>.</p>
+<p>This plugin calls <code>zoxide init</code> for Zsh.</p></h2>
 <div align="center">
   <img align="center" src="https://user-images.githubusercontent.com/59910950/182589498-56f595c6-36d0-4c72-a02f-328018a37f74.gif" alt="ajeetdsouza/zoxide" width="100%" height="auto" />
 </div>
@@ -13,7 +14,7 @@
 
 ### Install zoxide
 
-- [Official install](https://github.com/ajeetdsouza/zoxide#step-1-install-zoxide)
+- [Official install](https://github.com/ajeetdsouza/zoxide#step-1-install-zoxide) (recommended)
 - With Zi:
 
 ```zsh
