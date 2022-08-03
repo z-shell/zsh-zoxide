@@ -23,7 +23,7 @@ if (( ${ZI[SOURCED]} )) && [[ -d ${ZPFX} ]]; then
     command mkdir -p ${ZPFX}/share || \
     +zi-message "{error}Failed to create directory for database.{rst}"
   fi
-  _ZO_DATA_DIR=${ZPFX}/share
+  typeset -g _ZO_DATA_DIR=${ZPFX}/share
   if [[ -d ${ZI[MAN_DIR]} ]] && [[ -d ${Plugins[ZSH_ZOXIDE]}/man/man1 ]]; then
     cp ${Plugins[ZSH_ZOXIDE]}/man/man1/* ${ZI[MAN_DIR]}/man1/ || \
     +zi-message "{error}Failed to install manpages.{rst}"
