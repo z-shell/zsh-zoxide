@@ -24,7 +24,7 @@ zi light ajeetdsouza/zoxide
 
 ### Install zsh-zoxide
 
-#### Standart syntax 
+#### Standart syntax
 
 ```zsh
 zi ice has'zoxide'
