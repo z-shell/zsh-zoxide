@@ -32,7 +32,7 @@ fi
 
 # Set zoxide commands x, xi when using with Zi.
 if (( $ZI[SOURCED] )) && (( ${+functions[zi]} )); then
-  _ZO_CMD_PREFIX=x
+: ${_ZO_CMD_PREFIX:=x}
 fi
 
 # TODO: Env variables
@@ -49,7 +49,7 @@ fi
 
 # TODO: Output failures
 if (( $+commands[zoxide] )); then
-  if [[ $_ZO_CMD_PREFIX == x ]]; then
+  if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
     eval "$(zoxide init zsh --cmd $_ZO_CMD_PREFIX)"
   else
     eval "$(zoxide init zsh)"

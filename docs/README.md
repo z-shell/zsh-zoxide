@@ -49,15 +49,18 @@ x foo              # cd into highest ranked directory matching foo
 x foo bar          # cd into highest ranked directory matching foo and bar
 x foo /            # cd into a subdirectory starting with foo
 ```
+
 ```sh
 x ~/foo            # z also works like a regular cd command
 x foo/             # cd into relative path
 x ..               # cd one level up
 x -                # cd into previous directory
 ```
+
 ```sh
 xi foo             # cd with interactive selection (using fzf)
 ```
+
 ```sh
 x foo<SPACE><TAB>  # show interactive completions
 ```
@@ -65,4 +68,3 @@ x foo<SPACE><TAB>  # show interactive completions
 ### Environment variables and usage with other plugin managers
 
 The plugin will call `zoxide init` with prefixed commands `z`, `zi`.
-
