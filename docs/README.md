@@ -11,9 +11,19 @@
 
 ## The [`ajeetdsouza/zoxide`](https://github.com/ajeetdsouza/zoxide)
 
-### Install with Zi
+### Install zoxide
 
-#### Standart syntax
+- [Official install](https://github.com/ajeetdsouza/zoxide#step-1-install-zoxide)
+- With Zi:
+
+```zsh
+zi ice as'null' from"gh-r" sbin
+zi light ajeetdsouza/zoxide
+```
+
+### Install zsh-zoxide
+
+#### Standart syntax 
 
 ```zsh
 zi ice has'zoxide'
