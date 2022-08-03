@@ -58,6 +58,8 @@ fi
 # _ZO_MAXAGE
 # When set to 1, x will resolve symlinks before adding directories to the database.
 # _ZO_RESOLVE_SYMLINKS
+# Expand any tilde in the path.
+export _ZO_DATA_DIR=${~_ZO_DATA_DIR} 
 
 # TODO: Output failures
 if (( $+commands[zoxide] )); then
