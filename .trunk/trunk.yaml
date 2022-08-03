@@ -3,6 +3,7 @@ cli:
   version: 0.15.1-beta
 lint:
   enabled:
+    - actionlint@1.6.15
     - git-diff-check@SYSTEM
     - gitleaks@8.9.0
     - markdownlint@0.32.1
