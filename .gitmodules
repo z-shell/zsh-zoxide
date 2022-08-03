@@ -1,0 +1,3 @@
+[submodule "zoxide"]
+	path = zoxide
+	url = https://github.com/ajeetdsouza/zoxide
