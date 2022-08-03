@@ -64,7 +64,7 @@ x foo /            # cd into a subdirectory starting with foo
 ```
 
 ```sh
-x ~/foo            # z also works like a regular cd command
+x ~/foo            # x also works like a regular cd command
 x foo/             # cd into relative path
 x ..               # cd one level up
 x -                # cd into previous directory
