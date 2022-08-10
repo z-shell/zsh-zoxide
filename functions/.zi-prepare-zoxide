@@ -21,6 +21,7 @@ if (( ${ZI[SOURCED]} )) && [[ -d ${ZPFX} ]]; then
 fi
 
 # Set zoxide commands x, xi when using with Zi.
-if (( ${ZI[SOURCED]} )) && (( ${+functions[zi]} )); then
+if (( ${ZI[SOURCED]} )) && \
+(( ${+functions[zi]} )) && [[ -z ${_ZO_CMD_PREFIX} ]]; then
   typeset -g _ZO_CMD_PREFIX=x
 fi
