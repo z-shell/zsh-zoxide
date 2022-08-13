@@ -28,7 +28,9 @@ autoload -Uz .{zi,zsh}-prepare-zoxide
 # TODO: Investigate variables and functions.
 # Unset variables and functions which is not required after initialization.
 
-# Check and prepare zsh-zoxide
+# Check and prepare zsh-zoxide.
+# Used only once when zsh-zoxide is installed, or then
+# Plugins[ZSH_ZOXIDE_READY] reset to 0 to prevent full re-initialization
 if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
   # Set zoxide as ready to initiate.
   Plugins[ZSH_ZOXIDE_READY]=1
@@ -38,20 +40,19 @@ if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
   .zsh-prepare-zoxide
   exit_code=$?
   if (( exit_code )); then
-    print "Failed to prepare zoxide with returned exit code: $exit_code"
-    return 1
+    print "Failed to prepare zoxide, exit code: $exit_code"
+    return $exit_code
   fi
-fi
-
-# Prepare for Zi.
-if (( ZI[SOURCED] )) && [[ -d $ZPFX ]]; then
-  # Returns 101 if directory failed to be created.
-  # Returns 201 failed to copy files.
-  .zi-prepare-zoxide
-  exit_code=$?
-  if (( exit_code )); then
-    print "Failed to prepare Zi with returned exit code: $exit_code"
-    return 1
+  # Prepare for Zi.
+  if (( ZI[SOURCED] )) && [[ -d $ZPFX ]]; then
+    # Returns 101 if directory failed to be created.
+    # Returns 201 failed to copy files.
+    .zi-prepare-zoxide
+    exit_code=$?
+    if (( exit_code )); then
+      print "Failed to prepare Zi, exit code: $exit_code"
+      return $exit_code
+    fi
   fi
 fi
 
@@ -87,11 +88,11 @@ if (( ${+commands[zoxide]} )); then
     exit_code=$?
   fi
   if (( exit_code )); then
-    print "Failed to initialize zoxide and returned exit code: $exit_code"
-    return 1
+    print "Failed to initialize zoxide, exit code: $exit_code"
+    return $exit_code
   fi
 else
   print "Please install zoxide or make sure it is in your PATH"
   print "More info: https://github.com/ajeetdsouza/zoxide#installation"
-  return 1
+  exit 1
 fi

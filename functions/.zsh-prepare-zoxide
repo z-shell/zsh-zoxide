@@ -12,6 +12,8 @@ builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
 builtin setopt extended_glob warn_create_global typeset_silent \
 no_short_loops rc_quotes no_auto_pushd
 
+integer ret=0
+
 # Check dependencies
 typeset -a dependencies
 typeset dependency
@@ -20,7 +22,7 @@ dependencies=( "git" "zoxide" )
 for dependency in "${dependencies[@]}"; do
   (( ${+commands[$dependency]} )) || {
     print "Missing dependency: $dependency"
-    return 100
+    ret=100
   }
 done
 
@@ -31,7 +33,7 @@ if (( ${+commands[fzf]} )); then
   if [[ $fzf_version -lt 21 ]]; then
     print "The fzf version is too old. Please update to version 0.21.0 or higher."
     print "Note: zoxide only supports fzf v0.21.0 and above."
-    return 110
+    ret=110
   fi
 fi
 
@@ -41,8 +43,8 @@ if [[ ! -f ${Plugins[ZSH_ZOXIDE]:?}/man/man1/zoxide-add.1 ]]; then
   command git submodule --quiet update
   if [[ ! -f ${Plugins[ZSH_ZOXIDE]}/man/man1/zoxide.1 ]]; then
     print "Failed to initiate git submodules"
-    return 102
+    ret=102
   fi
 fi
 
-return 0
+return $ret

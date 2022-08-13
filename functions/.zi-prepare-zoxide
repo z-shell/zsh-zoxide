@@ -11,12 +11,14 @@ builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
 builtin setopt extended_glob warn_create_global \
 typeset_silent no_short_loops rc_quotes no_auto_pushd
 
+integer ret=0
+
 # The directory in which the database is stored.
 if [[ ! -d ${ZPFX}/share ]]; then
   # Create directory if it doesn't exist, else show error.
   command mkdir -p "${ZPFX}"/share || {
     print "Failed to create directory ${ZPFX}/share"
-    return 101
+    ret=101
   }
 fi
 
@@ -25,11 +27,11 @@ if [[ -d ${ZI[MAN_DIR]} ]] && [[ -d ${Plugins[ZSH_ZOXIDE]:?}/man/man1 ]]; then
   # Copy manpages if existing, else show error
   command cp "${Plugins[ZSH_ZOXIDE]}"/man/man1/* "${ZI[MAN_DIR]}"/man1/ || {
   +zi-message "{error}Failed to install manpages.{rst}"
-  return 201
+  ret=201
   }
 fi
 
 # Set zoxide commands x, xi when using with Zi.
 [[ -z $_ZO_CMD_PREFIX ]] && typeset -g _ZO_CMD_PREFIX=x
 
-return 0
+return $ret
