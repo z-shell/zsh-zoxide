@@ -23,7 +23,7 @@ if [[ $PMSPEC == *P* ]]; then
 fi
 
 # Autoload functions
-autoload -Uz "${Plugins[ZSH_ZOXIDE]}"/functions/.*(.:t)
+autoload -Uz .{zi,zsh}-prepare-zoxide
 
 # TODO: Investigate variables and functions.
 # Unset variables and functions which is not required after initialization.
