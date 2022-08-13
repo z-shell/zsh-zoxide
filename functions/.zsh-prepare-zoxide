@@ -1,0 +1,48 @@
+#autoload
+# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim: ft=zsh sw=2 ts=2 et
+#
+# Return 100 if missing dependencies.
+# Return 110 for incorrect dependencies version.
+# Return 102 if git submodule failed to be initialized.
+#
+# Zsh Plugin Standard
+# https://wiki.zshell.dev/community/zsh_plugin_standard#standard-recommended-options
+builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
+builtin setopt extended_glob warn_create_global typeset_silent \
+no_short_loops rc_quotes no_auto_pushd
+
+# Check dependencies
+typeset -a dependencies
+typeset dependency
+
+dependencies=( "git" "zoxide" )
+for dependency in "${dependencies[@]}"; do
+  (( ${+commands[$dependency]} )) || {
+    print "Missing dependency: $dependency"
+    return 100
+  }
+done
+
+# Check if fzf has minimal required version.
+if (( ${+commands[fzf]} )); then
+  typeset fzf_version
+  fzf_version=$(fzf --version | awk -F '.' '{print $2}')
+  if [[ $fzf_version -lt 21 ]]; then
+    print "The fzf version is too old. Please update to version 0.21.0 or higher."
+    print "Note: zoxide only supports fzf v0.21.0 and above."
+    return 110
+  fi
+fi
+
+# Initialize git submodule if required.
+if [[ ! -f ${Plugins[ZSH_ZOXIDE]:?}/man/man1/zoxide-add.1 ]]; then
+  command git submodule --quiet init
+  command git submodule --quiet update
+  if [[ ! -f ${Plugins[ZSH_ZOXIDE]}/man/man1/zoxide.1 ]]; then
+    print "Failed to initiate git submodules"
+    return 102
+  fi
+fi
+
+return 0
