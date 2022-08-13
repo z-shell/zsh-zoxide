@@ -26,8 +26,8 @@ fi
 if [[ -d ${ZI[MAN_DIR]} ]] && [[ -d ${Plugins[ZSH_ZOXIDE]:?}/man/man1 ]]; then
   # Copy manpages if existing, else show error
   command cp "${Plugins[ZSH_ZOXIDE]}"/man/man1/* "${ZI[MAN_DIR]}"/man1/ || {
-  +zi-message "{error}Failed to install manpages.{rst}"
-  ret=201
+    +zi-message "{error}Failed to install manpages.{rst}"
+    ret=201
   }
 fi
 
