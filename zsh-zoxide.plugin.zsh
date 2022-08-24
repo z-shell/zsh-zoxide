@@ -3,8 +3,8 @@
 #
 # Zsh Plugin Standard
 # https://wiki.zshell.dev/community/zsh_plugin_standard#zero-handling
-0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
-0="${${(M)0:#/*}:-$PWD/$0}"
+  0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
+  0="${${(M)0:#/*}:-$PWD/$0}"
 
 # https://wiki.zshell.dev/community/zsh_plugin_standard#standard-plugins-hash
 typeset -gA Plugins
@@ -15,23 +15,47 @@ if [[ $PMSPEC != *f* ]]; then
   fpath+=( "${0:h}/functions" )
 fi
 
-# Autoload functions
-autoload -Uz "${0:h}/functions"/.*(.:t)
+# https://wiki.zshell.dev/community/zsh_plugin_standard#global-parameter-with-capabilities
+if [[ $PMSPEC == *P* ]]; then
+  _ZO_DATA_DIR=${ZPFX}/share
+fi
 
-if [[ ! -f ${Plugins[ZSH_ZOXIDE]}/man/man1/zoxide.1 ]]; then
-  command git submodule --quiet init
-  command git submodule --quiet update
-  if [[ ! -f ${Plugins[ZSH_ZOXIDE]}/man/man1/zoxide-add.1 ]]; then
-    print "Failed to initiate git submodules"
-    return 1
+# Autoload functions
+autoload -Uz .{zi,zsh}-prepare-zoxide
+
+# TODO: Investigate variables and functions.
+# Unset variables and functions which is not required after initialization.
+
+# Check and prepare zsh-zoxide.
+# Used only once when zsh-zoxide is installed, or then
+# Plugins[ZSH_ZOXIDE_READY] reset to 0 to prevent full re-initialization
+if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
+  # Set zoxide as ready to initiate.
+  Plugins[ZSH_ZOXIDE_READY]=1
+  # Returns 100 if missing dependencies.
+  # Returns 110 for incorrect dependencies version.
+  # Returns 102 if git submodule failed to be initialized.
+  .zsh-prepare-zoxide
+  exit_code=$?
+  if (( exit_code )); then
+    print "Failed to prepare zoxide, exit code: $exit_code"
+    return $exit_code
+  fi
+  # Prepare for Zi.
+  if (( ZI[SOURCED] )) && [[ -d $ZPFX ]]; then
+    # Returns 101 if directory failed to be created.
+    # Returns 201 failed to copy files.
+    .zi-prepare-zoxide
+    exit_code=$?
+    if (( exit_code )); then
+      print "Failed to prepare Zi, exit code: $exit_code"
+      return $exit_code
+    fi
   fi
 fi
 
-# When using Zi:
-.zi-prepare-zoxide
-
-# TODO: Env variables
-# If not set for Zi use default or user prefered.
+# TODO: Investigate variables for potential use.
+# Set variable to preferred prefix.
 : ${_ZO_CMD_PREFIX:=$_ZO_CMD_PREFIX}
 # Directory in which the database is stored.
 : ${_ZO_DATA_DIR:=$_ZO_DATA_DIR}
@@ -46,14 +70,27 @@ fi
 # When set to 1, x will resolve symlinks before adding directories to the database.
 # _ZO_RESOLVE_SYMLINKS
 
-# Expand any tilde in the path.
-export _ZO_DATA_DIR=${~_ZO_DATA_DIR}
-
-# TODO: Output failures
-if (( $+commands[zoxide] )); then
-  if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
-    eval "$(zoxide init zsh --cmd $_ZO_CMD_PREFIX)"
-  else
-    eval "$(zoxide init zsh)"
+if (( ${+commands[zoxide]} )); then
+  if [[ -n $_ZO_DATA_DIR ]]; then
+    # If a parameter specified does not already exist, it is created in the global scope,
+    # The variable is set to the absolute path of the directory.
+    typeset -gx _ZO_DATA_DIR=${~_ZO_DATA_DIR}
   fi
+  # TODO: Check zoxide exit codes for possible improvements.
+  if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
+    # Set zoxide commands x, xi when using with Zi.
+    eval "$(zoxide init zsh --cmd $_ZO_CMD_PREFIX)"
+    exit_code=$?
+  elif (( ! _ZO_CMD_PREFIX )); then
+    eval "$(zoxide init zsh)"
+    exit_code=$?
+  fi
+  if (( exit_code )); then
+    print "Failed to initialize zoxide, exit code: $exit_code"
+    return $exit_code
+  fi
+else
+  print "Please install zoxide or make sure it is in your PATH"
+  print "More info: https://github.com/ajeetdsouza/zoxide#installation"
+  exit 1
 fi

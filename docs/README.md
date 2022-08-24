@@ -26,7 +26,7 @@ zi light ajeetdsouza/zoxide
 
 ### Install zsh-zoxide
 
-#### Standart syntax
+#### Standard syntax
 
 ```zsh
 zi ice has'zoxide'
@@ -67,7 +67,7 @@ x foo /            # cd into a subdirectory starting with foo
 x ~/foo            # x also works like a regular cd command
 x foo/             # cd into relative path
 x ..               # cd one level up
-x -                # cd into previous directory
+x -                # cd into the previous directory
 ```
 
 ```sh
@@ -80,4 +80,4 @@ x foo<SPACE><TAB>  # show interactive completions
 
 ### Environment variables and usage with other plugin managers
 
-The plugin will call `zoxide init` with prefixed commands `z`, `zi`.
+The plugin will call `zoxide init` with prefixed commands `z`, and `zi`.
