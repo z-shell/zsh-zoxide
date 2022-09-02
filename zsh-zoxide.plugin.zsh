@@ -79,7 +79,7 @@ if (( ${+commands[zoxide]} )); then
   # TODO: Check zoxide exit codes for possible improvements.
   if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
     # Set zoxide commands x, xi when using with Zi.
-    eval "$(zoxide init zsh --cmd $_ZO_CMD_PREFIX)"
+    eval "$(zoxide init --cmd $_ZO_CMD_PREFIX zsh)"
     exit_code=$?
   elif (( ! _ZO_CMD_PREFIX )); then
     eval "$(zoxide init zsh)"
