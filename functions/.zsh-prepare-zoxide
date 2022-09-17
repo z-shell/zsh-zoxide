@@ -18,7 +18,7 @@ integer ret=0
 typeset -a dependencies
 typeset dependency
 
-dependencies=( "git" "zoxide" )
+dependencies=( "git" "awk" "zoxide" )
 for dependency in "${dependencies[@]}"; do
   (( ${+commands[$dependency]} )) || {
     print "Missing dependency: $dependency"
