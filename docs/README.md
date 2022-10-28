@@ -2,7 +2,7 @@
   <a href="https://github.com/z-shell/zi">
     <img src="https://github.com/z-shell/zi/raw/main/docs/images/logo.svg" alt="Logo" width="80px" height="80px" />
   </a>
-❮ ZI ❯ Plugin - Zsh zoxide
+❮ Plugin - Zsh zoxide ❯
 </p></h1>
 <h2 align="center"><p><code>zoxide</code> is a smarter <code>cd</code> command, inspired by <code>z</code> and <code>autojump</code>.</p>
 <p>This plugin calls <code>zoxide init</code> for Zsh.</p></h2>
