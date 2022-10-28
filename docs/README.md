@@ -5,7 +5,7 @@
 ❮ Plugin - Zsh zoxide ❯
 </p></h1>
 <h2 align="center"><p><code>zoxide</code> is a smarter <code>cd</code> command, inspired by <code>z</code> and <code>autojump</code>.</p>
-<p>This plugin calls <code>zoxide init</code> for Zsh.</p></h2>
+<p>The plugin calls <code>zoxide init</code> for Zsh.</p></h2>
 <div align="center">
   <img align="center" src="https://user-images.githubusercontent.com/59910950/182589498-56f595c6-36d0-4c72-a02f-328018a37f74.gif" alt="ajeetdsouza/zoxide" width="100%" height="auto" />
 </div>
@@ -26,21 +26,21 @@ zi light ajeetdsouza/zoxide
 
 ### Install zsh-zoxide
 
-#### Standard syntax
+#### [Standard syntax](https://wiki.zshell.dev/docs/guides/syntax/common#standard-syntax)
 
 ```zsh
 zi ice has'zoxide'
 zi light z-shell/zsh-zoxide
 ```
 
-#### The "For" syntax
+#### [The "For" syntax](https://wiki.zshell.dev/docs/guides/syntax/for)
 
 ```zsh
 zi has'zoxide' light-mode for \
   z-shell/zsh-zoxide
 ```
 
-#### Turbo mode + "For" syntax
+#### [Turbo mode](https://wiki.zshell.dev/docs/getting_started/overview#turbo-mode-zsh--53) + "For" syntax
 
 ```zsh
 zi has'zoxide' wait lucid for \
