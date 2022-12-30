@@ -24,8 +24,9 @@ fi
 
 # Manpages are copied to set / default location.
 if [[ -d ${ZI[MAN_DIR]} ]] && [[ -d ${Plugins[ZSH_ZOXIDE]:?}/man/man1 ]]; then
-  # Copy manpages if existing, else show error
-  command cp "${Plugins[ZSH_ZOXIDE]}"/man/man1/* "${ZI[MAN_DIR]}"/man1/ || {
+  { test -f ${ZI[MAN_DIR]}/man1/zoxide.1 } && {
+    command ln -f -- "${Plugins[ZSH_ZOXIDE]}"/man/man1/*(.) "${ZI[MAN_DIR]}"/man1/ && \
+  } || {
     +zi-message "{error}Failed to install manpages.{rst}"
     ret=201
   }
