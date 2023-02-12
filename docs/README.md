@@ -4,20 +4,23 @@
   </a>
 ❮ Plugin - Zsh zoxide ❯
 </p></h1>
-<h2 align="center"><p><code>zoxide</code> is a smarter <code>cd</code> command, inspired by <code>z</code> and <code>autojump</code>.</p>
-<p>The plugin calls <code>zoxide init</code> for Zsh.</p></h2>
 <div align="center">
-  <img align="center" src="https://user-images.githubusercontent.com/59910950/182589498-56f595c6-36d0-4c72-a02f-328018a37f74.gif" alt="ajeetdsouza/zoxide" width="100%" height="auto" />
+  <img align="center" src="https://user-images.githubusercontent.com/59910950/182589498-56f595c6-36d0-4c72-a02f-328018a37f74.gif" alt="ajeetdsouza/zoxide" width="100%" height="80%" />
+
+<h2 align="center">The plugin calls <kbd><samp>zoxide init</samp></kbd> for Zsh.</p></h2>
+
+<h3 align="center"><p><kbd>zoxide</kbd> is a smarter <kbd>cd</kbd> command, inspired by <kbd>z</kbd> and <kbd>autojump</kbd>.</p>
+</h3>
 </div>
 
-## The [`ajeetdsouza/zoxide`](https://github.com/ajeetdsouza/zoxide)
+## The <samp>[`ajeetdsouza/zoxide`](https://github.com/ajeetdsouza/zoxide)</samp>
 
 ### Install zoxide
 
 - [Official install](https://github.com/ajeetdsouza/zoxide#step-1-install-zoxide) (recommended)
 - With Zi:
 
-```zsh
+```vim
 zi ice as'null' from"gh-r" sbin
 zi light ajeetdsouza/zoxide
 ```
@@ -26,23 +29,26 @@ zi light ajeetdsouza/zoxide
 
 ### Install zsh-zoxide
 
+> **Note**
+> - The alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval)
+
 #### [Standard syntax](https://wiki.zshell.dev/docs/guides/syntax/common#standard-syntax)
 
-```zsh
+```vim
 zi ice has'zoxide'
 zi light z-shell/zsh-zoxide
 ```
 
 #### [The "For" syntax](https://wiki.zshell.dev/docs/guides/syntax/for)
 
-```zsh
+```vim
 zi has'zoxide' light-mode for \
   z-shell/zsh-zoxide
 ```
 
 #### [Turbo mode](https://wiki.zshell.dev/docs/getting_started/overview#turbo-mode-zsh--53) + "For" syntax
 
-```zsh
+```vim
 zi has'zoxide' wait lucid for \
   z-shell/zsh-zoxide
 ```
@@ -51,10 +57,10 @@ zi has'zoxide' wait lucid for \
 
 ### Environment variables and usage with Zi
 
-The plugin will call `zoxide init` with prefixed commands `x`, `xi`:
+The plugin will call <kbd>zoxide init</kbd> with prefixed commands <kbd>x</kbd>, <kbd>xi</kbd>:
 
 - [x] Completions auto-loaded: [commands](https://wiki.zshell.dev/docs/guides/commands#completions-management), [ice-modifiers](https://wiki.zshell.dev/docs/guides/syntax/ice-modifiers#completions)
-- [x] Manpages auto installed: [\$ZI[MAN_DIR]](https://wiki.zshell.dev/docs/guides/customization#customizing-paths)
+- [x] Manpage auto installed: [\$ZI[MAN_DIR]](https://wiki.zshell.dev/docs/guides/customization#customizing-paths)
 - [x] [Database](https://github.com/ajeetdsouza/zoxide#environment-variables) directory set: [\$ZPFX/share](https://wiki.zshell.dev/community/zsh_plugin_standard#global-parameter-with-prefix), [customizing-paths](https://wiki.zshell.dev/docs/guides/customization#customizing-paths)
 
 ```sh
