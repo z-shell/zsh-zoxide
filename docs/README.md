@@ -30,6 +30,7 @@ zi light ajeetdsouza/zoxide
 ### Install zsh-zoxide
 
 > **Note**
+>
 > - The alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval)
 
 #### [Standard syntax](https://wiki.zshell.dev/docs/guides/syntax/common#standard-syntax)
