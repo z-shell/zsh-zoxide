@@ -21,7 +21,7 @@ if [[ $PMSPEC == *P* ]]; then
 fi
 
 # Autoload functions
-autoload -Uz .{zi,zsh}-prepare-zoxide
+autoload -Uz .{zi,zsh}-prepare-zoxide @zsh-eval-cache
 
 # TODO: Investigate variables and functions.
 # Unset variables and functions which is not required after initialization.
@@ -35,22 +35,18 @@ if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
   # Returns 100 if missing dependencies.
   # Returns 110 for incorrect dependencies version.
   # Returns 102 if git submodule failed to be initialized.
-  .zsh-prepare-zoxide
-  exit_code=$?
-  if (( exit_code )); then
-    print "Failed to prepare zoxide, exit code: $exit_code"
-    return $exit_code
-  fi
+  .zsh-prepare-zoxide || {
+    print "Failed to prepare zsh-zoxide, exit code: $?"
+    return $?
+  }
   # Prepare for Zi.
   if (( ZI[SOURCED] )) && [[ -d $ZPFX ]]; then
     # Returns 101 if directory failed to be created.
     # Returns 201 failed to copy files.
-    .zi-prepare-zoxide
-    exit_code=$?
-    if (( exit_code )); then
-      print "Failed to prepare Zi, exit code: $exit_code"
-      return $exit_code
-    fi
+    .zi-prepare-zoxide || {
+      print "Failed to prepare Zi, exit code: $?"
+      return $?
+    }
   fi
 fi
 
@@ -70,24 +66,25 @@ fi
 # When set to 1, x will resolve symlinks before adding directories to the database.
 # _ZO_RESOLVE_SYMLINKS
 
+# Initialize zoxide.
 if (( ${+commands[zoxide]} )); then
   if [[ -n $_ZO_DATA_DIR ]]; then
     # If a parameter specified does not already exist, it is created in the global scope,
     # The variable is set to the absolute path of the directory.
     typeset -gx _ZO_DATA_DIR=${~_ZO_DATA_DIR}
   fi
-  # TODO: Check zoxide exit codes for possible improvements.
   if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
     # Set zoxide commands x, xi when using with Zi.
-    eval "$(zoxide init --cmd $_ZO_CMD_PREFIX zsh)"
-    exit_code=$?
+    @zsh-eval-cache zoxide init --cmd $_ZO_CMD_PREFIX zsh || {
+      print "Failed to initialize zoxide, exit code: $?"
+      return $?
+    }
   elif (( ! _ZO_CMD_PREFIX )); then
-    eval "$(zoxide init zsh)"
-    exit_code=$?
-  fi
-  if (( exit_code )); then
-    print "Failed to initialize zoxide, exit code: $exit_code"
-    return $exit_code
+    # Default zoxide commands z, zi when not using with Zi.
+    @zsh-eval-cache zoxide init zsh || {
+      print "Failed to initialize zoxide, exit code: $?"
+      return $?
+    }
   fi
 else
   print "Please install zoxide or make sure it is in your PATH"
