@@ -1,4 +1,3 @@
-#autoload
 # -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
 # vim: ft=zsh sw=2 ts=2 et
 #
@@ -22,7 +21,7 @@ if [[ ! -d ${ZPFX}/share ]]; then
   }
 fi
 
-# Manpages are copied to set / default location.
+# Manpages are symlinked to set / default location.
 if [[ -d ${ZI[MAN_DIR]} ]] && [[ -d ${Plugins[ZSH_ZOXIDE]:?}/man/man1 ]]; then
     command ln -f -- "${Plugins[ZSH_ZOXIDE]}"/man/man1/*(.) "${ZI[MAN_DIR]}"/man1/ || {
     +zi-message "{error}Failed to install manpages.{rst}"

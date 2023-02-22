@@ -1,0 +1,29 @@
+# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim: ft=zsh sw=2 ts=2 et
+
+builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
+builtin setopt extended_glob typeset_silent no_short_loops no_auto_pushd rc_quotes
+
+local zoxide_hash="nohash"; integer ret=0
+local zoxide_cache_dir="${Plugins[ZSH_ZOXIDE]}/._zoxide"
+
+(( $+commands[md5] )) && zoxide_hash=$(builtin print -r -- "$*" | md5)
+(( $+commands[md5sum] )) && zoxide_hash=$(builtin print -r -- "$*" | md5sum | cut -d' ' -f1)
+
+local zoxide_cache="${zoxide_cache_dir}/${zoxide_hash}.zsh"
+
+if (( ZSH_EVAL_CACHE_DISABLED )); then
+  eval "$("$@")"
+  ret=$?
+elif [[ -s "$zoxide_cache" ]]; then
+  builtin source "$zoxide_cache"
+  ret=$?
+else
+  command mkdir -p "$zoxide_cache_dir"
+  "$@" >! "$zoxide_cache"
+  zcompile -U -- $zoxide_cache > /dev/null 2>&1
+  builtin source "$zoxide_cache"
+  ret=$?
+fi
+
+return $ret

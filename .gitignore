@@ -24,6 +24,7 @@
 # A popular plugin manager's files
 ._zi
 ._zinit
+._zoxide
 ._zplugin
 .zi_lastupd
 .zinit_lastupd

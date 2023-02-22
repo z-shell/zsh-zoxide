@@ -29,9 +29,7 @@ zi light ajeetdsouza/zoxide
 
 ### Install zsh-zoxide
 
-> **Note**
->
-> - The alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval)
+> **Note**: the alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval)
 
 #### [Standard syntax](https://wiki.zshell.dev/docs/guides/syntax/common#standard-syntax)
 
@@ -55,6 +53,16 @@ zi has'zoxide' wait lucid for \
 ```
 
 > Wiki: [automatic, condition based (loading/unloading)](https://wiki.zshell.dev/docs/getting_started/overview#automatic-condition-based---load--unload)
+
+#### [Profile startup time](https://wiki.zshell.dev/docs/guides/benchmark)
+
+After loading the plugin – shows profiling results and then unloads `zsh/zprof`
+
+```vim
+zi ice has'zoxide' atinit'zmodload zsh/zprof' \
+  atload'zprof | head -n 20; zmodload -u zsh/zprof'
+zi light ss-o/zsh-zoxide
+```
 
 ### Environment variables and usage with Zi
 
