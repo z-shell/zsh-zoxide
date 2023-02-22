@@ -61,7 +61,7 @@ After loading the plugin – shows profiling results and then unloads `zsh/zprof
 ```vim
 zi ice has'zoxide' atinit'zmodload zsh/zprof' \
   atload'zprof | head -n 20; zmodload -u zsh/zprof'
-zi light ss-o/zsh-zoxide
+zi light z-shell/zsh-zoxide
 ```
 
 ### Environment variables and usage with Zi
