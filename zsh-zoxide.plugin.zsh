@@ -20,16 +20,14 @@ if [[ $PMSPEC == *P* ]]; then
   _ZO_DATA_DIR=${ZPFX}/share
 fi
 
-# Autoload functions
-autoload -Uz .{zi,zsh}-prepare-zoxide @zsh-eval-cache
-
-# TODO: Investigate variables and functions.
-# Unset variables and functions which is not required after initialization.
+# Autoload zsh-eval-cache.
+autoload -Uz @zsh-eval-cache
 
 # Check and prepare zsh-zoxide.
 # Used only once when zsh-zoxide is installed, or then
 # Plugins[ZSH_ZOXIDE_READY] reset to 0 to prevent full re-initialization
 if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
+  autoload -Uz .{zi,zsh}-prepare-zoxide
   # Set zoxide as ready to initiate.
   Plugins[ZSH_ZOXIDE_READY]=1
   # Returns 100 if missing dependencies.
@@ -39,6 +37,7 @@ if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
     print "Failed to prepare zsh-zoxide, exit code: $?"
     return $?
   }
+
   # Prepare for Zi.
   if (( ZI[SOURCED] )) && [[ -d $ZPFX ]]; then
     # Returns 101 if directory failed to be created.
@@ -48,23 +47,23 @@ if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
       return $?
     }
   fi
+  unset -f .zsh-prepare-zoxide .zi-prepare-zoxide
 fi
 
-# TODO: Investigate variables for potential use.
 # Set variable to preferred prefix.
 : ${_ZO_CMD_PREFIX:=$_ZO_CMD_PREFIX}
 # Directory in which the database is stored.
 : ${_ZO_DATA_DIR:=$_ZO_DATA_DIR}
 # When set to 1, x will print the matched directory before navigating to it.
-# _ZO_ECHO
+: ${_ZO_ECHO:=$_ZO_ECHO}
 # Excludes the specified directories from the database.
-# _ZO_EXCLUDE_DIRS
+: ${_ZO_EXCLUDE_DIRS:=$_ZO_EXCLUDE_DIRS}
 # Custom options to pass to fzf during interactive selection. See man fzf for the list of options.
-# _ZO_FZF_OPTS
+: ${_ZO_FZF_OPTS:=$_ZO_FZF_OPTS}
 # Configures the aging algorithm, which limits the maximum number of entries in the database.
-# _ZO_MAXAGE
+: ${_ZO_MAXAGE:=$_ZO_MAXAGE}
 # When set to 1, x will resolve symlinks before adding directories to the database.
-# _ZO_RESOLVE_SYMLINKS
+: ${_ZO_RESOLVE_SYMLINKS:=$_ZO_RESOLVE_SYMLINKS}
 
 # Initialize zoxide.
 if (( ${+commands[zoxide]} )); then
@@ -73,17 +72,16 @@ if (( ${+commands[zoxide]} )); then
     # The variable is set to the absolute path of the directory.
     typeset -gx _ZO_DATA_DIR=${~_ZO_DATA_DIR}
   fi
+
   if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
     # Set zoxide commands x, xi when using with Zi.
     @zsh-eval-cache zoxide init --cmd $_ZO_CMD_PREFIX zsh || {
-      print "Failed to initialize zoxide, exit code: $?"
-      return $?
+      print "Failed to initialize zoxide"; return 1
     }
   elif (( ! _ZO_CMD_PREFIX )); then
     # Default zoxide commands z, zi when not using with Zi.
     @zsh-eval-cache zoxide init zsh || {
-      print "Failed to initialize zoxide, exit code: $?"
-      return $?
+      print "Failed to initialize zoxide"; return 1
     }
   fi
 else
