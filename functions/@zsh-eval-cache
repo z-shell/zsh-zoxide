@@ -29,13 +29,16 @@ if (( ZEC_DISABLED )); then
   eval $( $input ); ret=$?
 elif [[ -s $zoxide_cache ]]; then
   [[ -f $counter_file ]] || builtin print 1 > $counter_file 2> /dev/null
+
   count=$(<$counter_file) && (( count++ ))
   builtin print $count > $counter_file 2> /dev/null
+
   (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: hit $count"
 
   builtin source $zoxide_cache; ret=$?
 else
   [[ -f $counter_file ]] || builtin print 1 > $counter_file 2> /dev/null
+
   (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: miss"
 
   ($input > $zoxide_cache && zcompile -U $zoxide_cache && builtin source $zoxide_cache); ret=$?
