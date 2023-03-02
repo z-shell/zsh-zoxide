@@ -73,17 +73,20 @@ if (( ${+commands[zoxide]} )); then
     typeset -gx _ZO_DATA_DIR=${~_ZO_DATA_DIR}
   fi
 
-  if [[ $_ZO_CMD_PREFIX =~ ^[a-zA-Z]*$ ]]; then
+() {
+  builtin setopt extended_glob
+  if [[ ${_ZO_CMD_PREFIX} == (#b)([[:alpha:]]##)* ]]; then
     # Set zoxide commands x, xi when using with Zi.
-    @zsh-eval-cache zoxide init --cmd $_ZO_CMD_PREFIX zsh || {
-      print "Failed to initialize zoxide"; return 1
-    }
+    @zsh-eval-cache zoxide init --cmd $_ZO_CMD_PREFIX zsh
   elif (( ! _ZO_CMD_PREFIX )); then
     # Default zoxide commands z, zi when not using with Zi.
-    @zsh-eval-cache zoxide init zsh || {
-      print "Failed to initialize zoxide"; return 1
-    }
+    @zsh-eval-cache zoxide init zsh
   fi
+  local exit_code=$?; (( exit_code )) && {
+    print "Failed to initialize zoxide"; return $exit_code
+  }
+}
+
 else
   print "Please install zoxide or make sure it is in your PATH"
   print "More info: https://github.com/ajeetdsouza/zoxide#installation"
