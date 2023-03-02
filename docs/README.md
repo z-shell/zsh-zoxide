@@ -15,6 +15,18 @@
 
 ## The <samp>[`ajeetdsouza/zoxide`](https://github.com/ajeetdsouza/zoxide)</samp>
 
+### Options
+
+Export the following environment variables to change the default behavior:
+
+| Variable                | Description                                             | Default         |
+| ----------------------- | ------------------------------------------------------- | --------------- |
+| <kbd>ZEC_DISABLED</kbd> | Disable eval-caching                                    | <kbd>0</kbd>    |
+| <kbd>ZEC_DEBUG</kbd>    | Enable debug mode for eval-caching                      | <kbd>0</kbd>    |
+| <kbd>ZEC_MAX</kbd>      | Maximum number to load from cache (until force refresh) | <kbd>1000</kbd> |
+
+> Eval-cache files are stored in <kbd><samp>${Plugins[ZSH_ZOXIDE]}/.\_zoxide/\*</samp></kbd> directory.
+
 ### Install zoxide
 
 - [Official install](https://github.com/ajeetdsouza/zoxide#step-1-install-zoxide) (recommended)
@@ -27,7 +39,7 @@ zi light ajeetdsouza/zoxide
 
 > Wiki: install [fzf](https://wiki.zshell.dev/ecosystem/packages/usage#the-fzf-command-line-fuzzy-finder) command-line fuzzy finder as Zi package.
 
-### Install zsh-zoxide
+### Install **zsh-zoxide**
 
 > **Note**: the alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval)
 

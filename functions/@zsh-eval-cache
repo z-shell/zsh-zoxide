@@ -2,28 +2,48 @@
 # vim: ft=zsh sw=2 ts=2 et
 
 builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
-builtin setopt extended_glob typeset_silent no_short_loops no_auto_pushd rc_quotes
+builtin setopt extended_glob warn_create_global typeset_silent no_short_loops rc_quotes no_auto_pushd
 
-local zoxide_hash="nohash"; integer ret=0
-local zoxide_cache_dir="${Plugins[ZSH_ZOXIDE]}/._zoxide"
+local -a input=( $@ ) chpwd_functions; integer count ret=0
+local md5_hash zoxide_cache zoxide_cache_dir __zoxide_z_prefix
+local counter_file max=${ZEC_MAX:-1000}
 
-(( $+commands[md5] )) && zoxide_hash=$(builtin print -r -- "$*" | md5)
-(( $+commands[md5sum] )) && zoxide_hash=$(builtin print -r -- "$*" | md5sum | cut -d' ' -f1)
+md5_hash="no_hash"
+zoxide_cache_dir="${Plugins[ZSH_ZOXIDE]}/._zoxide"
 
-local zoxide_cache="${zoxide_cache_dir}/${zoxide_hash}.zsh"
+[[ -d $zoxide_cache_dir ]] || command mkdir -p $zoxide_cache_dir &> /dev/null
 
-if (( ZSH_EVAL_CACHE_DISABLED )); then
-  eval "$("$@")"
-  ret=$?
-elif [[ -s "$zoxide_cache" ]]; then
-  builtin source "$zoxide_cache"
-  ret=$?
+if (( $+commands[md5] )); then
+  md5_hash=$(md5 <<< $input)
+elif (( $+commands[md5sum] )); then
+  md5_hash=$(md5sum <<< $input | awk '{ print $1 }')
 else
-  command mkdir -p "$zoxide_cache_dir"
-  "$@" >! "$zoxide_cache"
-  zcompile -U -- $zoxide_cache > /dev/null 2>&1
-  builtin source "$zoxide_cache"
-  ret=$?
+  print "command: md5 program not found"; return 1
 fi
+
+zoxide_cache="${zoxide_cache_dir}/${md5_hash}.zsh"
+counter_file="${zoxide_cache_dir}/${md5_hash}.txt"
+
+if (( ZEC_DISABLED )); then
+  (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: disabled"
+  eval $( $input ); ret=$?
+elif [[ -s $zoxide_cache ]]; then
+  [[ -f $counter_file ]] || builtin print 1 > $counter_file 2> /dev/null
+
+  count=$(<$counter_file) && (( count++ ))
+  builtin print $count > $counter_file 2> /dev/null
+
+  (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: hit $count"
+
+  builtin source $zoxide_cache; ret=$?
+else
+  [[ -f $counter_file ]] || builtin print 1 > $counter_file 2> /dev/null
+
+  (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: miss"
+
+  ($input > $zoxide_cache && zcompile -U $zoxide_cache && builtin source $zoxide_cache); ret=$?
+fi
+
+(( count > max )) && command rm -rf ${zoxide_cache_dir} &> /dev/null
 
 return $ret
