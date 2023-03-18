@@ -15,15 +15,30 @@
 
 ## The <samp>[`ajeetdsouza/zoxide`](https://github.com/ajeetdsouza/zoxide)</samp>
 
-### Options
+### Environment variables
 
-Export the following environment variables to change the default behavior:
+| Variable                   | Description                               | Default                                 |
+| -------------------------- | ----------------------------------------- | --------------------------------------- |
+| <kbd>\_ZO_CMD_PREFIX</kbd> | Set variable to preferred prefix          | Zi: <kbd>x</kbd>, other: <kbd>z</kbd>   |
+| <kbd>\_ZO_DATA_DIR</kbd>   | Directory in which the database is stored | Zi: <kbd>$ZPFX/share</kbd>, other: none |
 
-| Variable                | Description                                             | Default         |
-| ----------------------- | ------------------------------------------------------- | --------------- |
-| <kbd>ZEC_DISABLED</kbd> | Disable eval-caching                                    | <kbd>0</kbd>    |
-| <kbd>ZEC_DEBUG</kbd>    | Enable debug mode for eval-caching                      | <kbd>0</kbd>    |
-| <kbd>ZEC_MAX</kbd>      | Maximum number to load from cache (until force refresh) | <kbd>1000</kbd> |
+All environment variables: [ajeetdsouza/zoxide#environment-variables](https://github.com/ajeetdsouza/zoxide#environment-variables)
+
+#### Eval-cache options
+
+Before setting the environment variables, you must declare the associative array:
+
+```shell
+typeset -A ZEC
+```
+
+Set the following environment variables to change the default behavior:
+
+| Variable                 | Description                                             | Default         |
+| ------------------------ | ------------------------------------------------------- | --------------- |
+| <kbd>ZEC[DISABLED]</kbd> | Disable eval-caching                                    | <kbd>0</kbd>    |
+| <kbd>ZEC[DEBUG]</kbd>    | Enable debug mode for eval-caching                      | <kbd>0</kbd>    |
+| <kbd>ZEC[MAX]</kbd>      | Maximum number to load from cache (until force refresh) | <kbd>1000</kbd> |
 
 > Eval-cache files are stored in <kbd><samp>${Plugins[ZSH_ZOXIDE]}/.\_zoxide/\*</samp></kbd> directory.
 

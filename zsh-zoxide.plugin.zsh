@@ -3,8 +3,8 @@
 #
 # Zsh Plugin Standard
 # https://wiki.zshell.dev/community/zsh_plugin_standard#zero-handling
-  0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
-  0="${${(M)0:#/*}:-$PWD/$0}"
+0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
+0="${${(M)0:#/*}:-$PWD/$0}"
 
 # https://wiki.zshell.dev/community/zsh_plugin_standard#standard-plugins-hash
 typeset -gA Plugins
@@ -20,14 +20,11 @@ if [[ $PMSPEC == *P* ]]; then
   _ZO_DATA_DIR=${ZPFX}/share
 fi
 
-# Autoload zsh-eval-cache.
-autoload -Uz @zsh-eval-cache
-
 # Check and prepare zsh-zoxide.
 # Used only once when zsh-zoxide is installed, or then
 # Plugins[ZSH_ZOXIDE_READY] reset to 0 to prevent full re-initialization
 if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
-  autoload -Uz .{zi,zsh}-prepare-zoxide
+  autoload -Uz .zsh-prepare-zoxide
   # Set zoxide as ready to initiate.
   Plugins[ZSH_ZOXIDE_READY]=1
   # Returns 100 if missing dependencies.
@@ -42,12 +39,14 @@ if (( ! Plugins[ZSH_ZOXIDE_READY] )); then
   if (( ZI[SOURCED] )) && [[ -d $ZPFX ]]; then
     # Returns 101 if directory failed to be created.
     # Returns 201 failed to copy files.
+    autoload -Uz .zi-prepare-zoxide
     .zi-prepare-zoxide || {
       print "Failed to prepare Zi, exit code: $?"
       return $?
     }
   fi
-  unset -f .zsh-prepare-zoxide .zi-prepare-zoxide
+
+  unfunction .zsh-prepare-zoxide .zi-prepare-zoxide &> /dev/null
 fi
 
 # Set variable to preferred prefix.
@@ -66,29 +65,25 @@ fi
 : ${_ZO_RESOLVE_SYMLINKS:=$_ZO_RESOLVE_SYMLINKS}
 
 # Initialize zoxide.
-if (( ${+commands[zoxide]} )); then
-  if [[ -n $_ZO_DATA_DIR ]]; then
-    # If a parameter specified does not already exist, it is created in the global scope,
-    # The variable is set to the absolute path of the directory.
-    typeset -gx _ZO_DATA_DIR=${~_ZO_DATA_DIR}
-  fi
-
-() {
-  builtin setopt extended_glob
-  if [[ ${_ZO_CMD_PREFIX} == (#b)([[:alpha:]]##)* ]]; then
-    # Set zoxide commands x, xi when using with Zi.
-    @zsh-eval-cache zoxide init --cmd $_ZO_CMD_PREFIX zsh
-  elif (( ! _ZO_CMD_PREFIX )); then
-    # Default zoxide commands z, zi when not using with Zi.
-    @zsh-eval-cache zoxide init zsh
-  fi
-  local exit_code=$?; (( exit_code )) && {
-    print "Failed to initialize zoxide"; return $exit_code
-  }
-}
-
-else
+if (( ! $+commands[zoxide] )); then
   print "Please install zoxide or make sure it is in your PATH"
   print "More info: https://github.com/ajeetdsouza/zoxide#installation"
   exit 1
+fi
+
+if [[ -n $_ZO_DATA_DIR ]]; then
+  # If a parameter specified does not already exist, it is created in the global scope,
+  # The variable is set to the absolute path of the directory.
+  typeset -gx _ZO_DATA_DIR=${~_ZO_DATA_DIR}
+fi
+
+# Autoload zsh-eval-cache.
+autoload -Uz @zsh-eval-cache
+
+if [[ -n $_ZO_CMD_PREFIX ]]; then
+  # Set zoxide commands x, xi when using with Zi.
+  @zsh-eval-cache zoxide init --cmd $_ZO_CMD_PREFIX zsh
+else
+  # Default zoxide commands z, zi when not using with Zi.
+  @zsh-eval-cache zoxide init zsh
 fi

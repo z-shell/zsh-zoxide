@@ -2,48 +2,57 @@
 # vim: ft=zsh sw=2 ts=2 et
 
 builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
-builtin setopt extended_glob warn_create_global typeset_silent no_short_loops rc_quotes no_auto_pushd
+builtin setopt extended_glob warn_create_global typeset_silent \
+  no_short_loops rc_quotes no_auto_pushd local_options
 
-local -a input=( $@ ) chpwd_functions; integer count ret=0
-local md5_hash zoxide_cache zoxide_cache_dir __zoxide_z_prefix
-local counter_file max=${ZEC_MAX:-1000}
+typeset -gA ZEC
+typeset -i count=0 ret=0
+typeset -a input_array=( "$@" )
+typeset -ga chpwd_functions __zoxide_z_prefix
 
-md5_hash="no_hash"
-zoxide_cache_dir="${Plugins[ZSH_ZOXIDE]}/._zoxide"
+: ${ZEC[CACHE_DIR]:=${ZEC[CACHE_DIR]:-${Plugins[ZSH_ZOXIDE]}/._zoxide}}
+: ${ZEC[MD5_HASH]:=${ZEC[MD5_HASH]:-no_hash}}
+: ${ZEC[DISABLED]:=${ZEC[DISABLED]:-0}}
+: ${ZEC[DEBUG]:=${ZEC[DEBUG]:-0}}
+: ${ZEC[MAX]:=${ZEC[MAX]:-1000}}
 
-[[ -d $zoxide_cache_dir ]] || command mkdir -p $zoxide_cache_dir &> /dev/null
+ZEC[CACHE_DIR]=${~ZEC[CACHE_DIR]}
+
+: ${ZEC[CACHE]:=${ZEC[CACHE]:-${ZEC[CACHE_DIR]}/${ZEC[MD5_HASH]}.zsh}}
+: ${ZEC[COUNT]:=${ZEC[COUNT]:-${ZEC[CACHE_DIR]}/${ZEC[MD5_HASH]}.txt}}
+
+[[ -d $ZEC[CACHE_DIR] ]] || command mkdir -p $ZEC[CACHE_DIR] &> /dev/null
 
 if (( $+commands[md5] )); then
-  md5_hash=$(md5 <<< $input)
+  ZEC[MD5_HASH]=$(md5 <<< $input_array)
 elif (( $+commands[md5sum] )); then
-  md5_hash=$(md5sum <<< $input | awk '{ print $1 }')
+  ZEC[MD5_HASH]=$(md5sum <<< $input_array | awk '{ print $1 }')
 else
-  print "command: md5 program not found"; return 1
+  print "@zsh-eval-cache: md5 program not found"; return 1
 fi
 
-zoxide_cache="${zoxide_cache_dir}/${md5_hash}.zsh"
-counter_file="${zoxide_cache_dir}/${md5_hash}.txt"
+if (( ZEC[DISABLED] )); then
+  (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: disabled"
+  eval "$( ${(@)input_array} )"; ret=$?
+elif [[ -s $ZEC[CACHE] ]]; then
+  [[ -f $ZEC[COUNT] ]] || builtin print 1 > $ZEC[COUNT] 2> /dev/null
 
-if (( ZEC_DISABLED )); then
-  (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: disabled"
-  eval $( $input ); ret=$?
-elif [[ -s $zoxide_cache ]]; then
-  [[ -f $counter_file ]] || builtin print 1 > $counter_file 2> /dev/null
+  count=$(<$ZEC[COUNT]) && (( count++ ))
+  builtin print $count > $ZEC[COUNT] 2> /dev/null
 
-  count=$(<$counter_file) && (( count++ ))
-  builtin print $count > $counter_file 2> /dev/null
+  (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: hit $count"
 
-  (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: hit $count"
-
-  builtin source $zoxide_cache; ret=$?
+  builtin source $ZEC[CACHE]; ret=$?
 else
-  [[ -f $counter_file ]] || builtin print 1 > $counter_file 2> /dev/null
+  [[ -f $ZEC[COUNT] ]] || builtin print 1 > $ZEC[COUNT] 2> /dev/null
 
-  (( ZEC_DEBUG )) && builtin print -Pr "@zsh-eval-cache: miss"
+  (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: miss"
 
-  ($input > $zoxide_cache && zcompile -U $zoxide_cache && builtin source $zoxide_cache); ret=$?
+  ${(@)input_array} >! $ZEC[CACHE] && zcompile -U $ZEC[CACHE] && builtin source $ZEC[CACHE]; ret=$?
 fi
 
-(( count > max )) && command rm -rf ${zoxide_cache_dir} &> /dev/null
+(( count > ZEC[MAX] )) && command rm -rf $ZEC[CACHE_DIR] &> /dev/null
+
+(( ret )) && builtin print -Pr "@zsh-eval-cache: failed to initialize zoxide" >&2
 
 return $ret
