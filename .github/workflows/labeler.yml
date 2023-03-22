@@ -14,5 +14,4 @@ jobs:
       - name: 🚀 Run Labeler
         uses: actions/labeler@ba790c862c380240c6d5e7427be5ace9a05c754b
         with:
-          repo-token: "${{ secrets.GH_PAT }}"
           sync-labels: false
