@@ -55,6 +55,4 @@ fi
 
 (( ret )) && builtin print -Pr "@zsh-eval-cache: failed to initialize zoxide" >&2
 
-(( ret )) && builtin print -Pr "@zsh-eval-cache: failed to initialize zoxide" >&2
-
 return $ret
