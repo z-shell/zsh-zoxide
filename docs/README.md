@@ -56,9 +56,10 @@ zi light ajeetdsouza/zoxide
 
 ### Install **zsh-zoxide**
 
-> **Note**: 
->- the alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval).
->- To forcefully set <kbd>z</kbd> function include <kbd>atinit'z(){ __zoxide_z "$@"; }'</kbd> when installing with Zi ([#37](https://github.com/z-shell/zsh-zoxide/issues/37)). 
+> **Note**:
+>
+> - the alternative for <kbd>zsh-zoxide</kbd> is [🌀 eval annex](https://wiki.zshell.dev/ecosystem/annexes/eval).
+> - To forcefully set <kbd>z</kbd> function include <kbd>atinit'z(){ \_\_zoxide_z "$@"; }'</kbd> when installing with Zi ([#37](https://github.com/z-shell/zsh-zoxide/issues/37)).
 
 #### [Standard syntax](https://wiki.zshell.dev/docs/guides/syntax/common#standard-syntax)
 
