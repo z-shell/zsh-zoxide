@@ -6,21 +6,16 @@ builtin setopt extended_glob warn_create_global typeset_silent \
   no_short_loops rc_quotes no_auto_pushd local_options
 
 typeset -gA ZEC
-typeset -i count=0 ret=0
+typeset -i ret=0
 typeset -a input_array=( "$@" )
 typeset -ga chpwd_functions __zoxide_z_prefix
 
 : ${ZEC[CACHE_DIR]:=${ZEC[CACHE_DIR]:-${Plugins[ZSH_ZOXIDE]}/._zoxide}}
-: ${ZEC[MD5_HASH]:=${ZEC[MD5_HASH]:-no_hash}}
 : ${ZEC[DISABLED]:=${ZEC[DISABLED]:-0}}
 : ${ZEC[DEBUG]:=${ZEC[DEBUG]:-0}}
 : ${ZEC[MAX]:=${ZEC[MAX]:-1000}}
 
 ZEC[CACHE_DIR]=${~ZEC[CACHE_DIR]}
-
-: ${ZEC[CACHE]:=${ZEC[CACHE]:-${ZEC[CACHE_DIR]}/${ZEC[MD5_HASH]}.zsh}}
-: ${ZEC[COUNT]:=${ZEC[COUNT]:-${ZEC[CACHE_DIR]}/${ZEC[MD5_HASH]}.txt}}
-
 [[ -d $ZEC[CACHE_DIR] ]] || command mkdir -p $ZEC[CACHE_DIR] &> /dev/null
 
 if (( $+commands[md5] )); then
@@ -28,23 +23,29 @@ if (( $+commands[md5] )); then
 elif (( $+commands[md5sum] )); then
   ZEC[MD5_HASH]=$(md5sum <<< $input_array | awk '{ print $1 }')
 else
-  print "@zsh-eval-cache: md5 program not found"; return 1
+  ZEC[MD5_HASH]=no_hash
 fi
+
+: ${ZEC[CACHE]:=${ZEC[CACHE]:-${ZEC[CACHE_DIR]}/${ZEC[MD5_HASH]}.zsh}}
+: ${ZEC[COUNT]:=${ZEC[COUNT]:-${ZEC[CACHE_DIR]}/${ZEC[MD5_HASH]}.txt}}
 
 if (( ZEC[DISABLED] )); then
   (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: disabled"
   eval "$( ${(@)input_array} )"; ret=$?
 elif [[ -s $ZEC[CACHE] ]]; then
-  [[ -f $ZEC[COUNT] ]] || builtin print 1 > $ZEC[COUNT] 2> /dev/null
+  [[ -f $ZEC[COUNT] ]] || { builtin print 1 > ${ZEC[COUNT]}; } 2> /dev/null
 
-  count=$(<$ZEC[COUNT]) && (( count++ ))
-  builtin print $count > $ZEC[COUNT] 2> /dev/null
+  typeset count=$(<${ZEC[COUNT]})
+  if [[ $count =~ ^[0-9]+$ ]]; then
+    (( count++ )) && { builtin print $count > ${ZEC[COUNT]}; } 2> /dev/null
+    (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: hit $count"
+  else
+    builtin print -Pr "@zsh-eval-cache: failed to get cache count"
+  fi
 
-  (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: hit $count"
-
-  builtin source $ZEC[CACHE]; ret=$?
+  builtin source ${ZEC[CACHE]}; ret=$?
 else
-  [[ -f $ZEC[COUNT] ]] || builtin print 1 > $ZEC[COUNT] 2> /dev/null
+  [[ -f ${ZEC[COUNT]} ]] || { builtin print 1 > ${ZEC[COUNT]}; } 2> /dev/null
 
   (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: miss"
 
