@@ -2,22 +2,52 @@
 name: "⭕ Trunk"
 on:
   push:
-    branches: [main]
-    tags: ["v*.*.*"]
+    paths: [.trunk/trunk.yaml]
   pull_request:
     types: [opened, synchronize]
   schedule:
-    - cron: "0 05 * * 2"
+    - cron: "0 8 * * 1-5"
   workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: read-all
 
 jobs:
   check:
-    if: github.event.schedule != '0 05 * * 5'
-    name: "⚡"
-    uses: z-shell/.github/.github/workflows/trunk.yml@main
-  upload:
-    if: github.event.schedule == '0 05 * * 5'
-    name: "🆙"
-    uses: z-shell/.github/.github/workflows/trunk.yml@main
-    secrets:
-      trunk-token: ${{ secrets.TRUNK_TOKEN }}
+    if: github.event.pull_request
+    runs-on: ubuntu-latest
+    environment: production
+    permissions: write-all
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v3
+      - name: ✨ Trunk Check
+        uses: trunk-io/trunk-action@782e83f803ca6e369f035d64c6ba2768174ba61b
+  upgrade:
+    if: github.event.schedule == '0 8 * * 1-5'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v3
+      - name: ✨ Trunk Upgrade
+        uses: trunk-io/trunk-action/upgrade@v1.1.6
+  cache:
+    if: github.event.push
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
+    steps:
+      - name: ✅ Checkout
+        uses: actions/checkout@v3
+      - name: ✨ Trunk Cache
+        uses: trunk-io/trunk-action@782e83f803ca6e369f035d64c6ba2768174ba61b
+        with:
+          check-mode: populate_cache_only
