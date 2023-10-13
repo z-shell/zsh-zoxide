@@ -1,10 +1,10 @@
 version: 0.1
 cli:
-  version: 1.16.1
+  version: 1.16.2
 plugins:
   sources:
     - id: trunk
-      ref: v1.2.4
+      ref: v1.2.5
       uri: https://github.com/trunk-io/plugins
 lint:
   disabled:
@@ -12,7 +12,7 @@ lint:
     - yamllint
   enabled:
     - trivy@0.45.1
-    - trufflehog@3.57.0
+    - trufflehog@3.59.0
     - actionlint@1.6.26
     - git-diff-check
     - prettier@3.0.3
