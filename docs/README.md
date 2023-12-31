@@ -1,6 +1,6 @@
 <h1 align="center"><p>
   <a href="https://github.com/z-shell/zi">
-    <img src="https://github.com/z-shell/zi/raw/main/docs/images/logo.svg" alt="Logo" width="80px" height="80px" />
+    <img src="https://raw.githubusercontent.com/z-shell/.github/main/profile/img/logo.png" alt="Logo" width="80px" height="80px" />
   </a>
 ❮ Plugin - Zsh zoxide ❯
 </p></h1>
