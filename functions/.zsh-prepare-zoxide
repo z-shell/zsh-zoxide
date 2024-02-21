@@ -29,7 +29,7 @@ done
 # Check if fzf has minimal required version.
 if (( ${+commands[fzf]} )); then
   typeset fzf_version
-  fzf_version=$(fzf --version | awk -F '.' '{print $2}')
+  fzf_version=$(fzf --version | awk -F '.' '{print $2}' | awk -F ' ' '{print $1}')
   if [[ $fzf_version -lt 21 ]]; then
     print "The fzf version is too old. Please update to version 0.21.0 or higher."
     print "Note: zoxide only supports fzf v0.21.0 and above."
