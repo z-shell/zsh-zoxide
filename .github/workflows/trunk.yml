@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [opened, synchronize]
   schedule:
-    - cron: "0 8 * * 1-5"
+    - cron: "0 8 8 * *"
   workflow_dispatch: {}
 
 concurrency:
