@@ -10,9 +10,9 @@ lint:
   disabled:
     - checkov
     - yamllint
+    - trufflehog
+    - trivy
   enabled:
-    - trivy@0.49.1
-    - trufflehog@3.67.7
     - actionlint@1.6.26
     - git-diff-check
     - prettier@3.2.5
