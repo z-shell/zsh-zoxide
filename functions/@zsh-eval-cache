@@ -2,13 +2,11 @@
 # vim: ft=zsh sw=2 ts=2 et
 
 builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
-builtin setopt extended_glob warn_create_global typeset_silent \
-  no_short_loops rc_quotes no_auto_pushd local_options
+builtin setopt extended_glob typeset_silent no_short_loops rc_quotes no_auto_pushd local_options
 
 typeset -gA ZEC
 typeset -i ret=0
 typeset -a input_array=( "$@" )
-typeset -ga chpwd_functions __zoxide_z_prefix
 
 : ${ZEC[CACHE_DIR]:=${ZEC[CACHE_DIR]:-${Plugins[ZSH_ZOXIDE]}/._zoxide}}
 : ${ZEC[DISABLED]:=${ZEC[DISABLED]:-0}}
@@ -16,7 +14,7 @@ typeset -ga chpwd_functions __zoxide_z_prefix
 : ${ZEC[MAX]:=${ZEC[MAX]:-1000}}
 
 ZEC[CACHE_DIR]=${~ZEC[CACHE_DIR]}
-[[ -d $ZEC[CACHE_DIR] ]] || command mkdir -p $ZEC[CACHE_DIR] &> /dev/null
+[[ -d ${ZEC[CACHE_DIR]} ]] || command mkdir -p ${ZEC[CACHE_DIR]} &> /dev/null
 
 if (( $+commands[md5] )); then
   ZEC[MD5_HASH]=$(md5 <<< $input_array)
@@ -32,7 +30,7 @@ fi
 if (( ZEC[DISABLED] )); then
   (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: disabled"
   eval "$( ${(@)input_array} )"; ret=$?
-elif [[ -s $ZEC[CACHE] ]]; then
+elif [[ -s ${ZEC[CACHE]} ]]; then
   [[ -f $ZEC[COUNT] ]] || { builtin print 1 > ${ZEC[COUNT]}; } 2> /dev/null
 
   typeset count=$(<${ZEC[COUNT]})
@@ -49,10 +47,10 @@ else
 
   (( ZEC[DEBUG] )) && builtin print -Pr "@zsh-eval-cache: miss"
 
-  ${(@)input_array} >! $ZEC[CACHE] && zcompile -U $ZEC[CACHE] && builtin source $ZEC[CACHE]; ret=$?
+  ${(@)input_array} >! ${ZEC[CACHE]} && zcompile -U ${ZEC[CACHE]} && builtin source ${ZEC[CACHE]}; ret=$?
 fi
 
-(( count > ZEC[MAX] )) && command rm -rf $ZEC[CACHE_DIR] &> /dev/null
+(( count > ZEC[MAX] )) && command rm -rf ${ZEC[CACHE_DIR]} &> /dev/null
 
 (( ret )) && builtin print -Pr "@zsh-eval-cache: failed to initialize zoxide" >&2
 
