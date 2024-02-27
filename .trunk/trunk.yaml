@@ -13,7 +13,7 @@ lint:
     - trufflehog
     - trivy
   enabled:
-    - actionlint@1.6.26
+    - actionlint@1.6.27
     - git-diff-check
     - prettier@3.2.5
     - markdownlint@0.39.0
