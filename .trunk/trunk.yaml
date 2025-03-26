@@ -17,7 +17,7 @@ lint:
     - git-diff-check
     - prettier@3.5.3
     - markdownlint@0.44.0
-    - gitleaks@8.24.0
+    - gitleaks@8.24.2
 runtimes:
   enabled:
     - python@3.10.8
