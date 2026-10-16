@@ -1,0 +1,16 @@
+---
+name: Commit Lint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Short policy runs must not cancel one another on push and metadata edits.
+jobs:
+  policy:
+    name: Policy
+    uses: z-shell/.github/.github/workflows/commit-lint.yml@f7ec572de9874ebd815fc4e49ce1419084348728 # main
