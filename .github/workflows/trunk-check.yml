@@ -1,0 +1,21 @@
+---
+name: Trunk Code Quality
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trunk:
+    name: Trunk
+    uses: z-shell/.github/.github/workflows/trunk.yml@f7ec572de9874ebd815fc4e49ce1419084348728 # main
